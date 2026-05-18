@@ -55,8 +55,8 @@ func NewConfig() *Config {
 			User:           viper.GetString("DATABASE_USER"),
 			Password:       viper.GetString("DATABASE_PASSWORD"),
 			DBName:         viper.GetString("DATABASE_NAME"),
-			DBMaxOpenConns: viper.GetString("DATABASE_MAX_OPEN_CONNECTION"),
-			DBMaxIdleConns: viper.GetString("DATABASE_MAX_IDLE_CONNECTION"),
+			DBMaxOpenConns: viper.GetInt("DATABASE_MAX_OPEN_CONNECTION"),
+			DBMaxIdleConns: viper.GetInt("DATABASE_MAX_IDLE_CONNECTION"),
 		},
 		RabbitMQ: RabbitMQ{
 			Host:     viper.GetString("RABBITMQ_HOST"),
