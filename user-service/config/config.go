@@ -13,8 +13,8 @@ type SqlDB struct {
 	User           string `json:"user"`
 	Password       string `json:"password"`
 	DBName         string `json:"db_name"`
-	DBMaxOpenConns string `json:"db_max_open_connections"`
-	DBMaxIdleConns string `json:"db_max_idle_connections"`
+	DBMaxOpenConns int    `json:"db_max_open_connections"`
+	DBMaxIdleConns int    `json:"db_max_idle_connections"`
 }
 
 type RabbitMQ struct {
