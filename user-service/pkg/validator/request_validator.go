@@ -34,14 +34,14 @@ func Validate(data interface{}) error {
 		}
 		return errors.New("Validation failed: " + joinMessages(errorMessages))
 	}
-	return errorMessages
+	return nil
 }
 
 func joinMessages(messages []string) string {
 	result := ""
-	for i, message := range errorMessages {
+	for i, message := range messages {
 		if i > 0 {
-			result += ", "	
+			result += ", "
 		}
 		result += message
 	}
