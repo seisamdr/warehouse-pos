@@ -2,7 +2,7 @@ package app
 
 import (
 	"context"
-	"micro-warehouse/user-service/config"
+	"micro-warehouse/user-service/configs"
 	"os"
 	"os/signal"
 	"syscall"
@@ -18,7 +18,7 @@ import (
 )
 
 func RunServer() {
-	cfg := config.NewConfig()
+	cfg := configs.NewConfig()
 
 	app := fiber.New(fiber.Config{
 		ErrorHandler: func(c *fiber.Ctx, err error) error {

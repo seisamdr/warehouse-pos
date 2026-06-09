@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"micro-warehouse/user-service/config"
+	"micro-warehouse/user-service/configs"
 
 	"github.com/gofiber/fiber/v2/log"
 	"github.com/streadway/amqp"
@@ -26,7 +26,7 @@ type RabbitMQServiceInterface interface {
 type rabbitMQService struct {
 	conn   *amqp.Connection
 	ch     *amqp.Channel
-	config config.Config
+	config configs.Config
 }
 
 // Close implements [RabbitMQServiceInterface].
@@ -82,7 +82,7 @@ func (r *rabbitMQService) PublishEmail(ctx context.Context, payload EmailPayload
 	return nil
 }
 
-func NewRabbitMQService(config config.Config) (RabbitMQServiceInterface, error) {
+func NewRabbitMQService(config configs.Config) (RabbitMQServiceInterface, error) {
 	conn, err := amqp.Dial(fmt.Sprintf("amqp://%s:%s@%s:%s", config.RabbitMQ.User, config.RabbitMQ.Password, config.RabbitMQ.Host, config.RabbitMQ.Port))
 	if err != nil {
 		log.Errorf("[RabbitMQ Service] NewRabbitMQService - 1: %v", err)

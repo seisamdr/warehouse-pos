@@ -2,7 +2,7 @@ package database
 
 import (
 	"fmt"
-	"micro-warehouse/user-service/config"
+	"micro-warehouse/user-service/configs"
 	"micro-warehouse/user-service/models"
 
 	"github.com/gofiber/fiber/v2/log"
@@ -14,7 +14,7 @@ type Postgres struct {
 	DB *gorm.DB
 }
 
-func ConnectionPostgres(cfg config.Config) (*Postgres, error) {
+func ConnectionPostgres(cfg configs.Config) (*Postgres, error) {
 	connString := fmt.Sprintf("postgres://%s:%s@%s:%s/%s",
 		cfg.SqlDB.User, cfg.SqlDB.Password, cfg.SqlDB.Host, cfg.SqlDB.Port, cfg.SqlDB.DBName)
 
