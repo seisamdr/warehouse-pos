@@ -14,6 +14,7 @@ import (
 type Container struct {
 	RoleController controllers.RoleControllerInterface
 	UserController controllers.UserControllerInterface
+	AuthController controllers.AuthControllerInterface
 }
 
 func BuildContainer() *Container {
@@ -36,8 +37,11 @@ func BuildContainer() *Container {
 	userUsecase := usecase.NewUserUsecase(userRepo, rabbitMQService)
 	userController := controllers.NewUserController(userUsecase)
 
+	authController := controllers.NewAuthController(userUsecase)
+
 	return &Container{
 		RoleController: roleController,
 		UserController: userController,
+		AuthController: authController,
 	}
 }
