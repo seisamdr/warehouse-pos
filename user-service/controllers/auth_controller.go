@@ -40,22 +40,22 @@ func (a *AuthController) Login(c *fiber.Ctx) error {
 	user, err := a.AuthService.GetUserByEmail(ctx, loginRequest.Email)
 	if err != nil {
 		log.Errorf("[AuthController.Login] Login - 3: %v", err.Error())
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
-			"message": "Invalid credentials",
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Internal server error",
 		})
 	}
 	
 	if user == nil{
-		log.Errorf("[AuthController.Login] Login - 4: %v", err.Error())
+		log.Errorf("[AuthController.Login] Login - 4: User not found")
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 			"message": "User not found",
 		})
 	}
 	
-	isSame := conv.CheckPasswordHash(user.Password, loginRequest.Password)
+	isSame := conv.CheckPasswordHash(loginRequest.Password, user.Password)
 
 	if !isSame{
-		log.Errorf("[AuthController.Login] Login - 5: %v", err.Error())
+		log.Errorf("[AuthController.Login] Login - 5: Invalid password")
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"message": "Invalid email or password",
 		})

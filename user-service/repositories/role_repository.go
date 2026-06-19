@@ -3,7 +3,7 @@ package repositories
 import (
 	"context"
 	"errors"
-	"micro-warehouse/user-service/models"
+	"micro-warehouse/user-service/model"
 
 	"github.com/gofiber/fiber/v2/log"
 	"gorm.io/gorm"
@@ -12,11 +12,11 @@ import (
 // ROLE : create, update, delete, get
 
 type RoleRepositoryInterface interface {
-	CreateRole(ctx context.Context, role models.Role) error
-	UpdateRole(ctx context.Context, role models.Role) error
+	CreateRole(ctx context.Context, role model.Role) error
+	UpdateRole(ctx context.Context, role model.Role) error
 	DeleteRole(ctx context.Context, id uint) error
-	GetRoleByID(ctx context.Context, id uint) (*models.Role, error)
-	GetAllRoles(ctx context.Context) ([]models.Role, error)
+	GetRoleByID(ctx context.Context, id uint) (*model.Role, error)
+	GetAllRoles(ctx context.Context) ([]model.Role, error)
 }
 
 type roleRepository struct {
@@ -24,7 +24,7 @@ type roleRepository struct {
 }
 
 // CreateRole implements [RoleRepositoryInterface].
-func (r *roleRepository) CreateRole(ctx context.Context, role models.Role) error {
+func (r *roleRepository) CreateRole(ctx context.Context, role model.Role) error {
 	select {
 	case <-ctx.Done():
 		log.Errorf("[RoleRepository] CreateRole - 1: %v", ctx.Err())
@@ -41,7 +41,7 @@ func (r *roleRepository) DeleteRole(ctx context.Context, id uint) error {
 		log.Errorf("[RoleRepository] DeleteRole - 1: %v", ctx.Err())
 		return ctx.Err()
 	default:
-		modelRole := models.Role{}
+		modelRole := model.Role{}
 
 		if err := r.db.WithContext(ctx).
 			Preload("Users").
@@ -61,13 +61,13 @@ func (r *roleRepository) DeleteRole(ctx context.Context, id uint) error {
 }
 
 // GetAllRoles implements [RoleRepositoryInterface].
-func (r *roleRepository) GetAllRoles(ctx context.Context) ([]models.Role, error) {
+func (r *roleRepository) GetAllRoles(ctx context.Context) ([]model.Role, error) {
 	select {
 	case <-ctx.Done():
 		log.Errorf("[RoleRepository] GetAllRoles - 1: %v", ctx.Err())
 		return nil, ctx.Err()
 	default:
-		modelRoles := []models.Role{}
+		modelRoles := []model.Role{}
 
 		err := r.db.WithContext(ctx).Preload("Users").Find(&modelRoles).Error
 		if err != nil {
@@ -80,13 +80,13 @@ func (r *roleRepository) GetAllRoles(ctx context.Context) ([]models.Role, error)
 }
 
 // GetRoleByID implements [RoleRepositoryInterface].
-func (r *roleRepository) GetRoleByID(ctx context.Context, id uint) (*models.Role, error) {
+func (r *roleRepository) GetRoleByID(ctx context.Context, id uint) (*model.Role, error) {
 	select {
 	case <-ctx.Done():
 		log.Errorf("[RoleRepository] GetRoleByID - 1: %v", ctx.Err())
 		return nil, ctx.Err()
 	default:
-		modelRole := models.Role{}
+		modelRole := model.Role{}
 
 		if err := r.db.WithContext(ctx).
 			Preload("Users").
@@ -101,13 +101,13 @@ func (r *roleRepository) GetRoleByID(ctx context.Context, id uint) (*models.Role
 }
 
 // UpdateRole implements [RoleRepositoryInterface].
-func (r *roleRepository) UpdateRole(ctx context.Context, role models.Role) error {
+func (r *roleRepository) UpdateRole(ctx context.Context, role model.Role) error {
 	select {
 	case <-ctx.Done():
 		log.Errorf("[RoleRepository] UpdateRole - 1: %v", ctx.Err())
 		return ctx.Err()
 	default:
-		modelRole := models.Role{}
+		modelRole := model.Role{}
 
 		if err := r.db.WithContext(ctx).
 			Preload("Users").

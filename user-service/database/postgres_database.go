@@ -3,7 +3,7 @@ package database
 import (
 	"fmt"
 	"micro-warehouse/user-service/configs"
-	"micro-warehouse/user-service/models"
+	"micro-warehouse/user-service/model"
 
 	"github.com/gofiber/fiber/v2/log"
 	"gorm.io/driver/postgres"
@@ -24,7 +24,7 @@ func ConnectionPostgres(cfg configs.Config) (*Postgres, error) {
 		return nil, err
 	}
 
-	db.AutoMigrate(&models.User{}, &models.Role{}, &models.UserRole{})
+	db.AutoMigrate(&model.User{}, &model.Role{}, &model.UserRole{})
 
 	sqlDB, err := db.DB()
 	if err != nil {

@@ -3,26 +3,26 @@ package repositories
 import (
 	"context"
 	"errors"
-	"micro-warehouse/user-service/models"
+	"micro-warehouse/user-service/model"
 
 	"github.com/gofiber/fiber/v2/log"
 	"gorm.io/gorm"
 )
 
 type UserRepositoryInterface interface {
-	CreateUser(ctx context.Context, user models.User) (*models.User, error)
-	GetAllUsers(ctx context.Context, page, limit int, search, sortBy, sortOrder string) ([]models.User, int64, error)
-	GetUserByID(ctx context.Context, id uint) (*models.User, error)
-	GetUserByEmail(ctx context.Context, email string) (*models.User, error)
-	UpdateUser(ctx context.Context, user models.User) error
+	CreateUser(ctx context.Context, user model.User) (*model.User, error)
+	GetAllUsers(ctx context.Context, page, limit int, search, sortBy, sortOrder string) ([]model.User, int64, error)
+	GetUserByID(ctx context.Context, id uint) (*model.User, error)
+	GetUserByEmail(ctx context.Context, email string) (*model.User, error)
+	UpdateUser(ctx context.Context, user model.User) error
 	DeleteUser(ctx context.Context, id uint) error
 
-	GetUserByRoleName(ctx context.Context, roleName string) ([]models.User, error)
+	GetUserByRoleName(ctx context.Context, roleName string) ([]model.User, error)
 
 	AssignUserToRole(ctx context.Context, userID uint, roleID uint) error
 	EditAssignUserToRole(ctx context.Context, assignRoleID uint, userID uint, roleID uint) error
-	GetUserRoleByID(ctx context.Context, assignRoleID uint) (*models.UserRole, error)
-	GetAllUserRoles(ctx context.Context, page, limit int, search, sortBy, sortOrder string) ([]models.UserRole, int64, error)
+	GetUserRoleByID(ctx context.Context, assignRoleID uint) (*model.UserRole, error)
+	GetAllUserRoles(ctx context.Context, page, limit int, search, sortBy, sortOrder string) ([]model.UserRole, int64, error)
 }
 
 type userRepository struct {
@@ -38,7 +38,7 @@ func (u *userRepository) AssignUserToRole(ctx context.Context, userID uint, role
 	default:
 	}
 
-	userRole := models.UserRole{
+	userRole := model.UserRole{
 		UserID: userID,
 		RoleID: roleID,
 	}
@@ -47,7 +47,7 @@ func (u *userRepository) AssignUserToRole(ctx context.Context, userID uint, role
 }
 
 // CreateUser implements [UserRepositoryInterface].
-func (u *userRepository) CreateUser(ctx context.Context, user models.User) (*models.User, error) {
+func (u *userRepository) CreateUser(ctx context.Context, user model.User) (*model.User, error) {
 	select {
 	case <-ctx.Done():
 		log.Errorf("[UserRepository] CreateUser - 1: %v", ctx.Err())
@@ -78,7 +78,7 @@ func (u *userRepository) DeleteUser(ctx context.Context, id uint) error {
 	default:
 	}
 
-	modelUser := models.User{}
+	modelUser := model.User{}
 
 	if err := u.db.WithContext(ctx).Select("id", "name", "email", "password", "photo", "phone").
 		Preload("Roles").
@@ -100,7 +100,7 @@ func (u *userRepository) EditAssignUserToRole(ctx context.Context, assignRoleID 
 	default:
 	}
 
-	userRole := models.UserRole{}
+	userRole := model.UserRole{}
 
 	if err := u.db.WithContext(ctx).Select("id", "user_id", "role_id").
 		Where("id = ?", assignRoleID).
@@ -116,7 +116,7 @@ func (u *userRepository) EditAssignUserToRole(ctx context.Context, assignRoleID 
 }
 
 // GetAllUserRoles implements [UserRepositoryInterface].
-func (u *userRepository) GetAllUserRoles(ctx context.Context, page int, limit int, search string, sortBy string, sortOrder string) ([]models.UserRole, int64, error) {
+func (u *userRepository) GetAllUserRoles(ctx context.Context, page int, limit int, search string, sortBy string, sortOrder string) ([]model.UserRole, int64, error) {
 	select {
 	case <-ctx.Done():
 		log.Errorf("[UserRepository] GetAllUserRoles - 1: %v", ctx.Err())
@@ -124,16 +124,16 @@ func (u *userRepository) GetAllUserRoles(ctx context.Context, page int, limit in
 	default:
 	}
 
-	userRoles := []models.UserRole{}
+	userRoles := []model.UserRole{}
 	var totalRecords int64
 
 	// Build query
-	query := u.db.WithContext(ctx).Model(&models.UserRole{})
+	query := u.db.WithContext(ctx).Model(&model.UserRole{})
 
 	// Apply search filter if provided
 	if search != "" {
-		query = query.Joins("JOIN users ON user_roles.user_id = users.id").
-			Joins("JOIN roles ON user_roles.role_id = roles.id").
+		query = query.Joins("JOIN users ON user_role.user_id = users.id").
+			Joins("JOIN roles ON user_role.role_id = roles.id").
 			Where("users.name ILIKE ? OR users.email ILIKE ? OR roles.name ILIKE ?",
 				"%"+search+"%", "%"+search+"%", "%"+search+"%")
 	}
@@ -170,7 +170,7 @@ func (u *userRepository) GetAllUserRoles(ctx context.Context, page int, limit in
 }
 
 // GetAllUsers implements [UserRepositoryInterface].
-func (u *userRepository) GetAllUsers(ctx context.Context, page int, limit int, search string, sortBy string, sortOrder string) ([]models.User, int64, error) {
+func (u *userRepository) GetAllUsers(ctx context.Context, page int, limit int, search string, sortBy string, sortOrder string) ([]model.User, int64, error) {
 	select {
 	case <-ctx.Done():
 		log.Errorf("[UserRepository] GetAllUsers - 1: %v", ctx.Err())
@@ -195,7 +195,7 @@ func (u *userRepository) GetAllUsers(ctx context.Context, page int, limit int, s
 	offset := (page - 1) * limit
 
 	// Build query
-	query := u.db.WithContext(ctx).Model(&models.User{})
+	query := u.db.WithContext(ctx).Model(&model.User{})
 
 	// Add search filter
 	if search != "" {
@@ -210,7 +210,7 @@ func (u *userRepository) GetAllUsers(ctx context.Context, page int, limit int, s
 	}
 
 	// Get paginated data
-	modelUsers := []models.User{}
+	modelUsers := []model.User{}
 	if err := query.Select("id", "name", "email", "password", "photo", "phone", "created_at").
 		Preload("Roles").
 		Order(sortBy + " " + sortOrder).
@@ -225,7 +225,7 @@ func (u *userRepository) GetAllUsers(ctx context.Context, page int, limit int, s
 }
 
 // GetUserByEmail implements [UserRepositoryInterface].
-func (u *userRepository) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
+func (u *userRepository) GetUserByEmail(ctx context.Context, email string) (*model.User, error) {
 	select {
 	case <-ctx.Done():
 		log.Errorf("[UserRepository] GetUserByEmail - 1: %v", ctx.Err())
@@ -233,7 +233,7 @@ func (u *userRepository) GetUserByEmail(ctx context.Context, email string) (*mod
 	default:
 	}
 
-	modelUsers := models.User{}
+	modelUsers := model.User{}
 	if err := u.db.WithContext(ctx).Select("id", "name", "email", "password", "photo", "phone", "created_at").
 		Where("email = ?", email).
 		Preload("Roles").
@@ -246,7 +246,7 @@ func (u *userRepository) GetUserByEmail(ctx context.Context, email string) (*mod
 }
 
 // GetUserByID implements [UserRepositoryInterface].
-func (u *userRepository) GetUserByID(ctx context.Context, id uint) (*models.User, error) {
+func (u *userRepository) GetUserByID(ctx context.Context, id uint) (*model.User, error) {
 	select {
 	case <-ctx.Done():
 		log.Errorf("[UserRepository] GetUserByID - 1: %v", ctx.Err())
@@ -254,7 +254,7 @@ func (u *userRepository) GetUserByID(ctx context.Context, id uint) (*models.User
 	default:
 	}
 
-	modelUsers := models.User{}
+	modelUsers := model.User{}
 	if err := u.db.WithContext(ctx).Select("id", "name", "email", "password", "photo", "phone", "created_at").
 		Where("id = ?", id).
 		Preload("Roles").
@@ -267,7 +267,7 @@ func (u *userRepository) GetUserByID(ctx context.Context, id uint) (*models.User
 }
 
 // GetUserByRoleName implements [UserRepositoryInterface].
-func (u *userRepository) GetUserByRoleName(ctx context.Context, roleName string) ([]models.User, error) {
+func (u *userRepository) GetUserByRoleName(ctx context.Context, roleName string) ([]model.User, error) {
 	select {
 	case <-ctx.Done():
 		log.Errorf("[UserRepository] GetUserByRoleName - 1: %v", ctx.Err())
@@ -275,7 +275,7 @@ func (u *userRepository) GetUserByRoleName(ctx context.Context, roleName string)
 	default:
 	}
 
-	users := []models.User{}
+	users := []model.User{}
 
 	// Gunakan subquery untuk mendapatkan user IDs yang memiliki role tertentu
 	subquery := u.db.Table("user_role").
@@ -296,7 +296,7 @@ func (u *userRepository) GetUserByRoleName(ctx context.Context, roleName string)
 }
 
 // GetUserRoleByID implements [UserRepositoryInterface].
-func (u *userRepository) GetUserRoleByID(ctx context.Context, assignRoleID uint) (*models.UserRole, error) {
+func (u *userRepository) GetUserRoleByID(ctx context.Context, assignRoleID uint) (*model.UserRole, error) {
 	select {
 	case <-ctx.Done():
 		log.Errorf("[UserRepository] GetUserRoleByID - 1: %v", ctx.Err())
@@ -304,7 +304,7 @@ func (u *userRepository) GetUserRoleByID(ctx context.Context, assignRoleID uint)
 	default:
 	}
 
-	userRole := models.UserRole{}
+	userRole := model.UserRole{}
 
 	if err := u.db.WithContext(ctx).Select("id", "user_id", "role_id", "updated_at").
 		Preload("User").
@@ -319,7 +319,7 @@ func (u *userRepository) GetUserRoleByID(ctx context.Context, assignRoleID uint)
 }
 
 // UpdateUser implements [UserRepositoryInterface].
-func (u *userRepository) UpdateUser(ctx context.Context, user models.User) error {
+func (u *userRepository) UpdateUser(ctx context.Context, user model.User) error {
 	select {
 	case <-ctx.Done():
 		log.Errorf("[UserRepository] UpdateUser - 1: %v", ctx.Err())
@@ -327,7 +327,7 @@ func (u *userRepository) UpdateUser(ctx context.Context, user models.User) error
 	default:
 	}
 
-	modelUser := models.User{}
+	modelUser := model.User{}
 
 	if err := u.db.WithContext(ctx).Select("id", "name", "email", "password", "photo", "phone").
 		Preload("Roles").

@@ -1,4 +1,4 @@
-package models
+package model
 
 import "time"
 
@@ -9,7 +9,7 @@ type User struct {
 	Password  string    `json:"password"`
 	Photo     string    `json:"photo"`
 	Phone     string    `json:"phone"`
-	Roles     []Role    `gorm:"many2many:user_roles;"`
+	Roles     []Role    `gorm:"many2many:user_role;"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }

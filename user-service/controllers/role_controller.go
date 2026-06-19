@@ -3,7 +3,7 @@ package controllers
 import (
 	"micro-warehouse/user-service/controllers/request"
 	"micro-warehouse/user-service/controllers/response"
-	"micro-warehouse/user-service/models"
+	"micro-warehouse/user-service/model"
 	"micro-warehouse/user-service/pkg/conv"
 	"micro-warehouse/user-service/pkg/validator"
 	"micro-warehouse/user-service/usecase"
@@ -43,7 +43,7 @@ func (r *roleController) CreateRole(c *fiber.Ctx) error {
 		})
 	}
 
-	reqModel := models.Role{
+	reqModel := model.Role{
 		Name: req.Name,
 	}
 
@@ -157,7 +157,7 @@ func (r *roleController) UpdateRole(c *fiber.Ctx) error {
 		})
 	}
 
-	reqModel := models.Role{
+	reqModel := model.Role{
 		ID:   conv.StringToUint(c.Params("id")),
 		Name: req.Name,
 	}

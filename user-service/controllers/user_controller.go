@@ -3,7 +3,7 @@ package controllers
 import (
 	"micro-warehouse/user-service/controllers/request"
 	"micro-warehouse/user-service/controllers/response"
-	"micro-warehouse/user-service/models"
+	"micro-warehouse/user-service/model"
 	"micro-warehouse/user-service/pkg/conv"
 	"micro-warehouse/user-service/pkg/pagination"
 	"micro-warehouse/user-service/pkg/validator"
@@ -82,7 +82,7 @@ func (u *userController) CreateUser(c *fiber.Ctx) error {
 		})
 	}
 
-	userModel := models.User{
+	userModel := model.User{
 		Name:     req.Name,
 		Email:    req.Email,
 		Password: req.Password,
@@ -406,7 +406,7 @@ func (u *userController) UpdateUser(c *fiber.Ctx) error {
 
 	userID := conv.StringToUint(id)
 
-	userModel := models.User{
+	userModel := model.User{
 		ID:       userID,
 		Name:     req.Name,
 		Email:    req.Email,

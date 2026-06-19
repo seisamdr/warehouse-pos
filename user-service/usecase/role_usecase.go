@@ -2,16 +2,16 @@ package usecase
 
 import (
 	"context"
-	"micro-warehouse/user-service/models"
+	"micro-warehouse/user-service/model"
 	"micro-warehouse/user-service/repositories"
 )
 
 type RoleUsecaseInterface interface {
-	CreateRole(ctx context.Context, role models.Role) error
-	UpdateRole(ctx context.Context, role models.Role) error
+	CreateRole(ctx context.Context, role model.Role) error
+	UpdateRole(ctx context.Context, role model.Role) error
 	DeleteRole(ctx context.Context, id uint) error
-	GetRoleByID(ctx context.Context, id uint) (*models.Role, error)
-	GetAllRoles(ctx context.Context) ([]models.Role, error)
+	GetRoleByID(ctx context.Context, id uint) (*model.Role, error)
+	GetAllRoles(ctx context.Context) ([]model.Role, error)
 }
 
 type roleUsecase struct {
@@ -19,7 +19,7 @@ type roleUsecase struct {
 }
 
 // CreateRole implements [RoleUsecaseInterface].
-func (r *roleUsecase) CreateRole(ctx context.Context, role models.Role) error {
+func (r *roleUsecase) CreateRole(ctx context.Context, role model.Role) error {
 	return r.roleRepo.CreateRole(ctx, role)
 }
 
@@ -29,17 +29,17 @@ func (r *roleUsecase) DeleteRole(ctx context.Context, id uint) error {
 }
 
 // GetAllRoles implements [RoleUsecaseInterface].
-func (r *roleUsecase) GetAllRoles(ctx context.Context) ([]models.Role, error) {
+func (r *roleUsecase) GetAllRoles(ctx context.Context) ([]model.Role, error) {
 	return r.roleRepo.GetAllRoles(ctx)
 }
 
 // GetRoleByID implements [RoleUsecaseInterface].
-func (r *roleUsecase) GetRoleByID(ctx context.Context, id uint) (*models.Role, error) {
+func (r *roleUsecase) GetRoleByID(ctx context.Context, id uint) (*model.Role, error) {
 	return r.roleRepo.GetRoleByID(ctx, id)
 }
 
 // UpdateRole implements [RoleUsecaseInterface].
-func (r *roleUsecase) UpdateRole(ctx context.Context, role models.Role) error {
+func (r *roleUsecase) UpdateRole(ctx context.Context, role model.Role) error {
 	return r.roleRepo.UpdateRole(ctx, role)
 }
 

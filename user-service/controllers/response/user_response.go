@@ -25,6 +25,6 @@ type UserRoleResponse struct {
 }
 
 type GetAllUserRolesResponse struct {
-	UserRoles  []UserRoleResponse            `json:"user_roles"`
+	UserRoles  []UserRoleResponse            `json:"user_role"`
 	Pagination pagination.PaginationResponse `json:"pagination"`
 }

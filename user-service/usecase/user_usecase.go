@@ -2,7 +2,7 @@ package usecase
 
 import (
 	"context"
-	"micro-warehouse/user-service/models"
+	"micro-warehouse/user-service/model"
 	"micro-warehouse/user-service/pkg/conv"
 	"micro-warehouse/user-service/repositories"
 	"micro-warehouse/user-service/service"
@@ -11,19 +11,19 @@ import (
 )
 
 type UserUsecaseInterface interface {
-	CreateUser(ctx context.Context, user models.User) error
-	GetAllUsers(ctx context.Context, page, limit int, search, sortBy, sortOrder string) ([]models.User, int64, error)
-	GetUserByID(ctx context.Context, id uint) (*models.User, error)
-	GetUserByEmail(ctx context.Context, email string) (*models.User, error)
-	UpdateUser(ctx context.Context, user models.User) error
+	CreateUser(ctx context.Context, user model.User) error
+	GetAllUsers(ctx context.Context, page, limit int, search, sortBy, sortOrder string) ([]model.User, int64, error)
+	GetUserByID(ctx context.Context, id uint) (*model.User, error)
+	GetUserByEmail(ctx context.Context, email string) (*model.User, error)
+	UpdateUser(ctx context.Context, user model.User) error
 	DeleteUser(ctx context.Context, id uint) error
 
-	GetUserByRoleName(ctx context.Context, roleName string) ([]models.User, error)
+	GetUserByRoleName(ctx context.Context, roleName string) ([]model.User, error)
 
 	AssignUserToRole(ctx context.Context, userID uint, roleID uint) error
 	EditAssignUserToRole(ctx context.Context, assignRoleID uint, userID uint, roleID uint) error
-	GetUserRoleByID(ctx context.Context, assignRoleID uint) (*models.UserRole, error)
-	GetAllUserRoles(ctx context.Context, page, limit int, search, sortBy, sortOrder string) ([]models.UserRole, int64, error)
+	GetUserRoleByID(ctx context.Context, assignRoleID uint) (*model.UserRole, error)
+	GetAllUserRoles(ctx context.Context, page, limit int, search, sortBy, sortOrder string) ([]model.UserRole, int64, error)
 }
 
 type userUsecase struct {
@@ -37,7 +37,7 @@ func (u *userUsecase) AssignUserToRole(ctx context.Context, userID uint, roleID 
 }
 
 // CreateUser implements [UserUsecaseInterface].
-func (u *userUsecase) CreateUser(ctx context.Context, user models.User) error {
+func (u *userUsecase) CreateUser(ctx context.Context, user model.User) error {
 	password, err := conv.HashPassword(user.Password)
 	if err != nil {
 		log.Errorf("[UserUsecase] CreateUser - 1: %v", err)
@@ -90,12 +90,12 @@ func (u *userUsecase) EditAssignUserToRole(ctx context.Context, assignRoleID uin
 }
 
 // GetAllUserRoles implements [UserUsecaseInterface].
-func (u *userUsecase) GetAllUserRoles(ctx context.Context, page int, limit int, search string, sortBy string, sortOrder string) ([]models.UserRole, int64, error) {
+func (u *userUsecase) GetAllUserRoles(ctx context.Context, page int, limit int, search string, sortBy string, sortOrder string) ([]model.UserRole, int64, error) {
 	return u.userRepo.GetAllUserRoles(ctx, page, limit, search, sortBy, sortOrder)
 }
 
 // GetAllUsers implements [UserUsecaseInterface].
-func (u *userUsecase) GetAllUsers(ctx context.Context, page int, limit int, search string, sortBy string, sortOrder string) ([]models.User, int64, error) {
+func (u *userUsecase) GetAllUsers(ctx context.Context, page int, limit int, search string, sortBy string, sortOrder string) ([]model.User, int64, error) {
 	if page < 1 {
 		page = 1
 	}
@@ -114,27 +114,27 @@ func (u *userUsecase) GetAllUsers(ctx context.Context, page int, limit int, sear
 }
 
 // GetUserByEmail implements [UserUsecaseInterface].
-func (u *userUsecase) GetUserByEmail(ctx context.Context, email string) (*models.User, error) {
+func (u *userUsecase) GetUserByEmail(ctx context.Context, email string) (*model.User, error) {
 	return u.userRepo.GetUserByEmail(ctx, email)
 }
 
 // GetUserByID implements [UserUsecaseInterface].
-func (u *userUsecase) GetUserByID(ctx context.Context, id uint) (*models.User, error) {
+func (u *userUsecase) GetUserByID(ctx context.Context, id uint) (*model.User, error) {
 	return u.userRepo.GetUserByID(ctx, id)
 }
 
 // GetUserByRoleName implements [UserUsecaseInterface].
-func (u *userUsecase) GetUserByRoleName(ctx context.Context, roleName string) ([]models.User, error) {
+func (u *userUsecase) GetUserByRoleName(ctx context.Context, roleName string) ([]model.User, error) {
 	return u.userRepo.GetUserByRoleName(ctx, roleName)
 }
 
 // GetUserRoleByID implements [UserUsecaseInterface].
-func (u *userUsecase) GetUserRoleByID(ctx context.Context, assignRoleID uint) (*models.UserRole, error) {
+func (u *userUsecase) GetUserRoleByID(ctx context.Context, assignRoleID uint) (*model.UserRole, error) {
 	return u.userRepo.GetUserRoleByID(ctx, assignRoleID)
 }
 
 // UpdateUser implements [UserUsecaseInterface].
-func (u *userUsecase) UpdateUser(ctx context.Context, user models.User) error {
+func (u *userUsecase) UpdateUser(ctx context.Context, user model.User) error {
 	if err := u.userRepo.UpdateUser(ctx, user); err != nil {
 		log.Errorf("[UserUsecase] UpdateUser - 1: %v", err)
 		return err
