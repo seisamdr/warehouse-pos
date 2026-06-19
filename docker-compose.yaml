@@ -10,7 +10,7 @@ services:
       POSTGRES_DB: warehouse_user_db
     restart: unless-stopped
     ports:
-      - "5432:5432"
+      - "5442:5432"
     volumes:
       - postgres_user_data:/var/lib/postgresql/data
     healthcheck:
@@ -28,7 +28,7 @@ services:
       POSTGRES_DB: warehouse_product_db
     restart: unless-stopped
     ports:
-      - "5433:5432"
+      - "5443:5432"
     volumes:
       - postgres_product_data:/var/lib/postgresql/data
     healthcheck:
@@ -46,7 +46,7 @@ services:
       POSTGRES_DB: warehouse_transaction_db
     restart: unless-stopped
     ports:
-      - "5434:5432"
+      - "5444:5432"
     volumes:
       - postgres_transaction_data:/var/lib/postgresql/data
     healthcheck:
@@ -64,7 +64,7 @@ services:
       POSTGRES_DB: warehouse_merchant_db
     restart: unless-stopped
     ports:
-      - "5435:5432"
+      - "5445:5432"
     volumes:
       - postgres_merchant_data:/var/lib/postgresql/data
     healthcheck:
@@ -82,7 +82,7 @@ services:
       POSTGRES_DB: warehouse_notification_db
     restart: unless-stopped
     ports:
-      - "5436:5432"
+      - "5446:5432"
     volumes:
       - postgres_notification_data:/var/lib/postgresql/data
     healthcheck:
@@ -100,7 +100,7 @@ services:
       POSTGRES_DB: warehouse_warehouse_db
     restart: unless-stopped
     ports:
-      - "5437:5432"
+      - "5447:5432"
     volumes:
       - postgres_warehouse_data:/var/lib/postgresql/data
     healthcheck:
@@ -125,6 +125,9 @@ services:
     image: rabbitmq:3-management
     container_name: warehouse_rabbitmq
     restart: unless-stopped
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
     ports:
       - "5672:5672"
       - "15672:15672"
