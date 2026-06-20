@@ -218,8 +218,8 @@ func (u *userController) GetAllUserRoles(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"data":    response,
 		"message": "User Roles fetched successfully",
+		"data":    response,
 	})
 }
 
@@ -287,8 +287,8 @@ func (u *userController) GetAllUsers(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"data":    response,
 		"message": "User fetched successfully",
+		"data":    response,
 	})
 }
 
@@ -322,8 +322,8 @@ func (u *userController) GetUserByID(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"data":    resp,
 		"message": "User fetched successfully",
+		"data":    resp,
 	})
 }
 
@@ -358,8 +358,8 @@ func (u *userController) GetUserByRoleName(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"data":    resp,
 		"message": "User fetched successfully",
+		"data":    resp,
 	})
 }
 
